@@ -5,7 +5,11 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const evn = process.env.NODE_ENV;
 
 const config = {
@@ -42,6 +46,13 @@ const config = {
         filename: "js/lib.js?v=[chunkhash]",
         warning: false
     }),
+    new HappyPack({
+      id: 'happybabel',
+      loaders: ['babel-loader'],
+      threadPool: happyThreadPool,
+      cache: true,
+      verbose: true
+    }),
   ],
   module: {
     loaders: [
@@ -51,7 +62,8 @@ const config = {
       },
       {
         test: /\.(js|es6)$/,
-        loader: 'babel',
+        // loader: 'babel',
+        loader: 'happypack/loader?id=happybabel',
         exclude: /node_module/
       },
       {
@@ -95,18 +107,20 @@ const config = {
 }
 
 //开启压缩
-if(evn=="publish"){
+if(evn=="production"){
     config.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: false,
+      new ParallelUglifyPlugin({
+        uglifyJS:{
             minimize: true,
-            compress: {
-                drop_debugger: true,
+            comments:false,
+            sourceMap: false,
+            compressor: {
                 warnings: false,
-                drop_console: true
-            },
-            comments:false
-        })
+                drop_console: true,
+                drop_debugger: true
+            }
+        }
+      })
     );
 }
 module.exports = config;

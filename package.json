@@ -6,10 +6,17 @@
   "author": "",
   "license": "",
   "scripts": {
-    "dev": "export NODE_ENV=dev&&webpack -w --watch-poll --progress --colors --display-error-details --profile --display-modules",
-    "online": "export NODE_ENV=publish&&webpack --progress --colors --display-error-details --profile --display-modules"
+    "dev": "webpack -w --watch-poll --progress --colors --display-error-details --profile --display-modules",
+    "online": "export NODE_ENV=production&&webpack --progress --colors --display-error-details --profile --display-modules",
+    "winonline": "set NODE_ENV=production&&webpack --progress --colors --display-error-details --profile --display-modules"
   },
-  "dependencies": {},
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "happypack": "^3.0.1",
+    "multer": "^1.2.1",
+    "webpack-parallel-uglify-plugin": "^0.2.0"
+  },
   "devDependencies": {
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
