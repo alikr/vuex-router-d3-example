@@ -19,17 +19,23 @@ const config = {
   },
   output: {
     path: './dist',
-    filename: 'js/[name].js?v=[chunkhash]',
+    filename: 'js/[name].js',
     publicPath: ''
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
+      title:'index',
       template: path.join(__dirname,'/src/index.html'),
       filename: path.join(__dirname,'/dist/index.html'),
       excludeChunks: [],
-      inject: true
+      inject: true,
+      hash:true,
+      minify:{
+          removeComments:true,
+          collapseWhitespace:true
+      }
     }),
 
     // new webpack.ProvidePlugin({
